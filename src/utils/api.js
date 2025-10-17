@@ -1,4 +1,6 @@
 // src/api.js
+"use client";
+
 import axios from "axios";
 
 const API_KEY =
@@ -72,7 +74,6 @@ export const fetchNextPlayingMovies = async (page = 1) => {
 };
 export const actorDetails = async (actorID) => {
   const response = await axiosInstance.get(`/person/${actorID}?language=uk-UA`);
-  console.log("Актор", response.data);
   return response.data;
 };
 export const actorDetailsFilm = async (actorID) => {
