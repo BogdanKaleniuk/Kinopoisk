@@ -3,7 +3,6 @@
 import "./globals.css";
 import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
-import { fetchNowPlayingMovies, searchMovies } from "@/utils/api";
 import { useRouter } from "next/navigation";
 
 export default function RootLayout({ children }) {

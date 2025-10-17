@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 
-import SearchBar from "@/components/SearchBar";
 import MovieList from "@/components/MovieList";
 
 import Loader from "@/components/Loader";
@@ -20,15 +19,22 @@ export default function Home() {
   useEffect(() => {
     async function getMovies() {
       setLoading(true);
-      if (query) {
-        const data = await searchMovies(query);
-        setMovies(data);
-      } else {
-        const data = await fetchNowPlayingMovies();
-        setMovies(data);
+      try {
+        if (query.trim() !== "") {
+          const data = await searchMovies(query);
+          setMovies(data);
+        } else {
+          const data = await fetchNowPlayingMovies();
+          setMovies(data);
+        }
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+        setMovies([]);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
+
     getMovies();
   }, [query]);
 
