@@ -4,12 +4,12 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   actorDetails,
+  actorDetailsFilm,
   fetchMovieCredits,
   fetchMovieDetails,
   fetchMovieReviews,
 } from "@/utils/api";
 import Loader from "@/components/Loader";
-
 export default function MoviePage() {
   const { id } = useParams();
   const router = useRouter();
@@ -37,7 +37,8 @@ export default function MoviePage() {
 
   const handleActorClick = async (actorId) => {
     const data = await actorDetails(actorId);
-    setSelectedActor(data);
+    const filmsData = await actorDetailsFilm(actorId);
+    setSelectedActor({ ...data, movies: filmsData.cast });
     setActiveTab("actorDetail");
   };
 
@@ -51,6 +52,19 @@ export default function MoviePage() {
       >
         Назад до пошуку
       </button>
+
+      <img
+        src={
+          movie.poster_path
+            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+            : "/placeholder-movie.jpg"
+        }
+        alt={movie.title}
+        width={300}
+        height={350}
+        className="rounded-lg shadow-md mb-4 max-w-sm"
+      />
+
       <h1 className="text-3xl font-bold mb-2">{movie.title}</h1>
       <p>{movie.overview}</p>
       <p>Rating: {movie.vote_average}</p>
@@ -102,9 +116,8 @@ export default function MoviePage() {
                 height={150}
               />
               <p>
-                {" "}
                 {actor.name} as {actor.character}
-              </p>{" "}
+              </p>
             </li>
           ))}
         </ul>
@@ -142,6 +155,31 @@ export default function MoviePage() {
           <p>
             Biography: {selectedActor.biography || "No biography available."}
           </p>
+          <h3>Movies:</h3>
+          <ul className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+            {selectedActor.movies?.map((movie) => (
+              <li
+                key={movie.id}
+                className="text-center cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => {
+                  setActiveTab("overview");
+                  setSelectedActor(null);
+                  router.push(`/movie/${movie.id}`);
+                }}
+              >
+                <img
+                  src={
+                    movie.poster_path
+                      ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+                      : "/placeholder-movie.jpg"
+                  }
+                  alt={movie.title}
+                  className="w-full h-auto rounded"
+                />
+                <p className="mt-1">{movie.title}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </main>
