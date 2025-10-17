@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 
-import SearchBar from "@/components/SearchBar";
 import MovieList from "@/components/MovieList";
 
 import Loader from "@/components/Loader";
